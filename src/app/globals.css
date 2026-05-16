@@ -1,0 +1,268 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════
+   MICo Design System — Michigan Colors, Typography, Animations
+   ═══════════════════════════════════════════════════════════ */
+
+@theme inline {
+  /* ─── Michigan Color Palette ─── */
+  --color-pine: #06402B;
+  --color-pine-dark: #042E1E;
+  --color-pine-light: #0A5C3F;
+  --color-pine-50: #E8F5EE;
+  --color-pine-100: #C6E6D4;
+
+  --color-gold: #D4AF37;
+  --color-gold-hover: #E0C04A;
+  --color-gold-muted: rgba(212, 175, 55, 0.5);
+  --color-gold-light: #F5EDD0;
+  --color-gold-50: #FDF8E8;
+
+  --color-sage: #E2F0D9;
+  --color-sage-light: #F0F7EC;
+  --color-sage-dark: #C5DEB6;
+
+  --color-slate-iron: #2D3436;
+  --color-slate-muted: #636E72;
+  --color-slate-light: #B2BEC3;
+
+  --color-surface: #FFFFFF;
+  --color-surface-light: #F8FAF9;
+  --color-surface-warm: #FAFAF8;
+
+  --color-border: #DFE6E9;
+  --color-border-light: #EEF1F2;
+
+  --color-success: #00B894;
+  --color-warning: #FDCB6E;
+  --color-error: #E17055;
+  --color-info: #74B9FF;
+
+  /* ─── Typography ─── */
+  --font-display: var(--font-outfit), 'Outfit', system-ui, sans-serif;
+  --font-body: var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  /* ─── Shadows ─── */
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+  --shadow-gold-glow: 0 4px 20px rgba(212, 175, 55, 0.3);
+  --shadow-pine-glow: 0 4px 20px rgba(6, 64, 43, 0.2);
+  --shadow-elevated: 0 12px 40px rgba(0, 0, 0, 0.15);
+
+  /* ─── Spacing ─── */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+}
+
+/* ─── Base Styles ─── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-slate-iron);
+  background: var(--color-surface-light);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ─── Scrollbar Styling ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-light);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Custom Animations
+   ═══════════════════════════════════════════════════════════ */
+
+/* AI Pulse Glow */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(212, 175, 55, 0.4);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.8), 0 0 32px rgba(212, 175, 55, 0.3);
+    opacity: 0.85;
+  }
+}
+
+/* Scanning Line for Resume Upload */
+@keyframes scan-line {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Fade In Up */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In Right */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale In */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Ring Fill Animation */
+@keyframes ring-fill {
+  from {
+    stroke-dashoffset: var(--ring-circumference, 283);
+  }
+  to {
+    stroke-dashoffset: var(--ring-offset, 0);
+  }
+}
+
+/* Shimmer Loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Gentle Float */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Spin */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Animation Utility Classes ─── */
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-scan-line {
+  animation: scan-line 2s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out forwards;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(212, 175, 55, 0.08) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* ─── Stagger Children Animations ─── */
+.stagger-children > * {
+  opacity: 0;
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* ─── Glassmorphism Utility ─── */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dark {
+  background: rgba(6, 64, 43, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Card Hover Lift ─── */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* ─── Gold Gradient Text ─── */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #D4AF37, #E8D06F, #D4AF37);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Pine Gradient Background ─── */
+.bg-gradient-pine {
+  background: linear-gradient(180deg, #06402B 0%, #042E1E 100%);
+}
+
+/* ─── Subtle Border Glow ─── */
+.border-glow-gold {
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3), 0 0 12px rgba(212, 175, 55, 0.1);
+}
