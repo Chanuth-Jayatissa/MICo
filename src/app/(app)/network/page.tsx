@@ -56,7 +56,7 @@ function getTimelineNodes(status: ReferralStatus) {
 // Status label helpers
 const statusLabels: Record<ReferralStatus, string> = {
   analyzing: "Analyzing Resume...",
-  drafting: "Watsonx Drafting Pitch...",
+  drafting: "AI Drafting Pitch...",
   pending_approval: "Sent for Insider Approval",
   approved: "Approved & Referred",
   declined: "Declined",
@@ -84,11 +84,11 @@ function timeAgo(dateStr: string) {
 
 export default function NetworkPage() {
   const { state, approveReferral, declineReferral } = useMico();
-  const { referrals } = state;
+  const { referrals, userProfile } = state;
 
   // Split referrals into outbox (my requests) and inbox (requests sent to me as an insider)
-  const myRequests = referrals.filter((r) => r.requesterId === "usr-current");
-  const incomingRequests = referrals.filter((r) => r.insiderId === "usr-current" || r.insiderId === "usr-insider-unknown");
+  const myRequests = referrals.filter((r) => r.requesterId === userProfile.id);
+  const incomingRequests = referrals.filter((r) => r.insiderId === userProfile.id || r.insiderId === "usr-insider-unknown");
 
   const [activeView, setActiveView] = useState<"outbox" | "inbox">("outbox");
 
@@ -152,7 +152,7 @@ export default function NetworkPage() {
         <AIPulse
           label={
             activeView === "outbox"
-              ? "Watsonx is monitoring your referral pipeline and drafting personalized pitches."
+              ? "MICo AI is monitoring your referral pipeline and drafting personalized pitches."
               : "AI-generated referral pitches are ready for your review."
           }
         />
@@ -401,7 +401,7 @@ function InboxCard({
             ) : (
               <div className="flex-1 flex items-center justify-center rounded-xl border border-border bg-sage-light p-4">
                 <div className="text-center">
-                  <AIPulse label="Watsonx is analyzing the candidate's resume and drafting a pitch..." />
+                  <AIPulse label="MICo AI is analyzing the candidate's resume and drafting a pitch..." />
                 </div>
               </div>
             )}
@@ -409,7 +409,7 @@ function InboxCard({
             {/* Transparency Tag */}
             <p className="mt-3 text-[11px] italic text-slate-light flex items-center gap-1">
               <Sparkles className="h-3 w-3" />
-              Drafted autonomously by IBM Granite LLM based on candidate profile
+              Drafted autonomously by MICo AI based on candidate profile
               and job requirements.
             </p>
 
@@ -442,8 +442,7 @@ function InboxCard({
                     Approved & Sent
                   </p>
                   <p className="text-xs text-slate-muted">
-                    The referral pitch has been routed to HR automatically via
-                    Orchestrate.
+                    The referral pitch has been routed to HR automatically via MICo.
                   </p>
                 </div>
               </div>

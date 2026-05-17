@@ -1,51 +1,22 @@
 import { UserProfile } from "@/types/user";
 
-export const mockUserProfile: UserProfile = {
+/**
+ * Default blank profile for new users.
+ * Gets hydrated with auth data (name/email/avatar from Google) on login,
+ * then further enriched when the user uploads their resume.
+ */
+export const defaultUserProfile: UserProfile = {
   id: "usr-current",
-  email: "demo@mico.community",
-  fullName: "Chanuth Jayatissa",
+  email: "",
+  fullName: "",
   avatarUrl: undefined,
-  title: "Software Engineer",
-  skills: [
-    "React",
-    "Next.js",
-    "TypeScript",
-    "Python",
-    "Node.js",
-    "SQL",
-    "Tailwind CSS",
-    "Git",
-    "REST APIs",
-    "Agile",
-    "Machine Learning",
-    "Data Analysis",
-  ],
-  industryAlignment: [
-    {
-      skills: "React + Next.js + TypeScript",
-      industry: "Connected Mobility / Auto-Tech",
-      confidence: "high",
-    },
-    {
-      skills: "Python + Machine Learning",
-      industry: "Autonomous Systems / AI Research",
-      confidence: "high",
-    },
-    {
-      skills: "Data Analysis + SQL",
-      industry: "FinTech / Digital Banking",
-      confidence: "medium",
-    },
-    {
-      skills: "Node.js + REST APIs",
-      industry: "E-Commerce / Marketplace Tech",
-      confidence: "medium",
-    },
-  ],
+  title: undefined,
+  skills: [],
+  industryAlignment: [],
   openToRelocate: true,
   openToHybrid: true,
-  availableForReferrals: true,
+  availableForReferrals: false,
   resumeUrl: undefined,
-  resumeParsed: true,
-  createdAt: "2026-05-01T00:00:00Z",
+  resumeParsed: false,
+  createdAt: new Date().toISOString(),
 };

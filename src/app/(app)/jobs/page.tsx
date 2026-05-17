@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useMico } from "@/lib/store/mico-store";
 import MatchRing from "@/components/ui/MatchRing";
@@ -47,9 +47,26 @@ export default function JobsPage() {
 
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
+  const [industryFilter, setIndustryFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"match" | "recent">("match");
   const [selectedJob, setSelectedJob] = useState<Job | null>(allJobs[0] ?? null);
   const [highMatchOnly, setHighMatchOnly] = useState(false);
+
+  // Keep selectedJob in sync when job scores are recalculated
+  useEffect(() => {
+    if (selectedJob) {
+      const updated = allJobs.find((j) => j.id === selectedJob.id);
+      if (updated && updated.matchScore !== selectedJob.matchScore) {
+        setSelectedJob(updated);
+      }
+    }
+  }, [allJobs, selectedJob]);
+
+  // Derive unique industries from job data
+  const industries = useMemo(() => {
+    const set = new Set(allJobs.map((j) => j.industry).filter(Boolean) as string[]);
+    return Array.from(set).sort();
+  }, [allJobs]);
 
   const filteredJobs = useMemo(() => {
     return allJobs
@@ -63,8 +80,10 @@ export default function JobsPage() {
           );
         const matchesLocation =
           locationFilter === "all" || job.locationFilter === locationFilter;
+        const matchesIndustry =
+          industryFilter === "all" || job.industry === industryFilter;
         const matchesHighMatch = !highMatchOnly || job.matchScore > 80;
-        return matchesSearch && matchesLocation && matchesHighMatch;
+        return matchesSearch && matchesLocation && matchesIndustry && matchesHighMatch;
       })
       .sort((a, b) => {
         if (sortBy === "match") return b.matchScore - a.matchScore;
@@ -72,11 +91,11 @@ export default function JobsPage() {
           new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
         );
       });
-  }, [allJobs, search, locationFilter, sortBy, highMatchOnly]);
+  }, [allJobs, search, locationFilter, industryFilter, sortBy, highMatchOnly]);
 
   // Check if a referral has already been requested for a job
   const hasRequestedReferral = (jobId: string) => {
-    return referrals.some((r) => r.jobId === jobId && r.requesterId === "usr-current");
+    return referrals.some((r) => r.jobId === jobId && r.requesterId === state.userProfile.id);
   };
 
   return (
@@ -87,7 +106,7 @@ export default function JobsPage() {
           MICo Opportunities
         </h1>
         <p className="mt-1 text-slate-muted">
-          Michigan roles matched to your skills by watsonx.
+          Michigan opportunities matched to your skills by AI — across every industry.
         </p>
       </div>
 
@@ -107,12 +126,25 @@ export default function JobsPage() {
               {label}
             </button>
           ))}
-          {locationFilter !== "all" && (
+          {industries.map((ind) => (
             <button
-              onClick={() => setLocationFilter("all")}
+              key={ind}
+              onClick={() => setIndustryFilter(industryFilter === ind ? "all" : ind)}
+              className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
+                industryFilter === ind
+                  ? "bg-gold text-pine-dark shadow-md"
+                  : "bg-gold-50 text-gold hover:bg-gold/20"
+              }`}
+            >
+              {ind}
+            </button>
+          ))}
+          {(locationFilter !== "all" || industryFilter !== "all") && (
+            <button
+              onClick={() => { setLocationFilter("all"); setIndustryFilter("all"); }}
               className="rounded-full px-4 py-2 text-xs font-semibold text-slate-muted bg-surface-light hover:bg-border-light transition-colors"
             >
-              Clear
+              Clear All
             </button>
           )}
         </div>
@@ -389,12 +421,12 @@ function JobDetail({
         </div>
       </div>
 
-      {/* Watsonx Match Analysis Card */}
+      {/* AI Match Analysis Card */}
       <div className="rounded-xl bg-sage p-5 space-y-4">
         <div className="flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-gold" />
           <span className="text-xs font-semibold uppercase tracking-wider text-gold">
-            Watsonx Match Analysis
+            AI Match Analysis
           </span>
         </div>
 
@@ -495,7 +527,7 @@ function JobDetail({
       {/* AI Status Footer */}
       <div className="pt-2 border-t border-border-light">
         <AIPulse
-          label="Watsonx continuously re-ranks matches as your profile evolves."
+          label="AI continuously re-ranks matches as your profile evolves."
           size="sm"
         />
       </div>

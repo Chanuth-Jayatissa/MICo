@@ -5,6 +5,7 @@ export interface Job {
   companyLogo?: string;
   location: string;
   locationFilter: "detroit-metro" | "ann-arbor" | "grand-rapids" | "remote-mi";
+  industry?: string; // "Healthcare", "Manufacturing", "Technology", "Education", etc.
   salaryRange?: string;
   description: string;
   requirements: string[];

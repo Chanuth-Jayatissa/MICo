@@ -58,11 +58,21 @@ export default function ProfilePage() {
   const handleFileUpload = useCallback(
     (file: File) => {
       setIsProcessing(true);
-      // Simulate parsing delay
-      setTimeout(() => {
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
         setIsProcessing(false);
+        uploadResume(file.name, text);
+      };
+      reader.onerror = () => {
+        setIsProcessing(false);
+        // Fallback: send just the filename if file reading fails
         uploadResume(file.name);
-      }, 2500);
+      };
+      // Read file as text — works well for .txt, .doc, .rtf
+      // For .pdf, the raw text extraction won't be perfect but the AI can still work with it
+      reader.readAsText(file);
     },
     [uploadResume]
   );
@@ -118,7 +128,7 @@ export default function ProfilePage() {
           className="animate-fade-in-up"
           style={{ animationDelay: "0.1s" }}
         >
-          <AIPulse label="Watsonx has parsed your resume and generated industry alignments. Matches are being updated." />
+          <AIPulse label="MICo AI has parsed your resume and generated industry alignments. Matches are being updated." />
         </div>
       )}
 
@@ -321,7 +331,7 @@ export default function ProfilePage() {
               </span>
             </div>
             <p className="text-sm text-slate-muted mb-5">
-              Watsonx translates your skills into Michigan&apos;s specific economic
+              MICo AI translates your skills into Michigan&apos;s specific economic
               sectors for targeted matching.
             </p>
 
@@ -340,11 +350,11 @@ export default function ProfilePage() {
                 </span>
               </div>
               <p className="text-sm text-slate-iron leading-relaxed">
-                The IBM Granite LLM analyzes your parsed skills and experience
-                to map them against Michigan&apos;s core industries — automotive,
-                fintech, healthcare, and advanced manufacturing. This alignment
-                drives your job and event recommendations across the entire
-                platform.
+                MICo AI analyzes your parsed skills and experience
+                to map them against Michigan&apos;s diverse industries — healthcare,
+                automotive, manufacturing, education, finance, trades, and technology.
+                This alignment drives your job and event recommendations
+                across the entire platform.
               </p>
             </div>
           </div>

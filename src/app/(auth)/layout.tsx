@@ -39,7 +39,7 @@ export default function AuthLayout({
             <p className="text-lg text-pine-100/80 leading-relaxed">
               Your AI-powered gateway to Michigan&apos;s tech community. 
               Discover local events, find tailored opportunities, and connect 
-              with insider referrals — all powered by IBM watsonx.
+              with insider referrals — all powered by MICo AI.
             </p>
 
             {/* Feature pills */}
@@ -59,7 +59,7 @@ export default function AuthLayout({
 
           {/* Bottom */}
           <p className="text-sm text-pine-100/50">
-            Powered by IBM watsonx.ai · Built for Michigan
+            Powered by MICo AI · Built for Michigan
           </p>
         </div>
       </div>
