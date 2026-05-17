@@ -58,7 +58,7 @@ export default function DashboardPage() {
   const upcomingEvents = [...events]
     .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
     .slice(0, 2);
-  const myReferrals = referrals.filter((r) => r.requesterId === "usr-current");
+  const myReferrals = referrals.filter((r) => r.requesterId === user.id);
   const activeReferrals = myReferrals.slice(0, 3);
 
   return (
@@ -66,11 +66,11 @@ export default function DashboardPage() {
       {/* Hero Greeting + AI Status */}
       <div className="animate-fade-in-up">
         <h1 className="font-display text-3xl font-bold text-pine lg:text-4xl">
-          Welcome to your MICo Dashboard, {user.fullName.split(" ")[0]}.
+          Welcome to your MICo Dashboard{user.fullName ? `, ${user.fullName.split(" ")[0]}` : ""}.
         </h1>
         <div className="mt-3 flex items-center gap-6">
           <AIPulse
-            label={`Your watsonx agents found ${newMatchCount} new local matches today.`}
+            label={`Your AI agents found ${newMatchCount} new opportunities across Michigan today.`}
           />
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function DashboardPage() {
               )}
             </div>
             <p className="mt-4 text-slate-iron leading-relaxed max-w-xl">
-              <span className="font-semibold text-pine">Watsonx logic:</span>{" "}
+              <span className="font-semibold text-pine">AI Match:</span>{" "}
               {spotlightJob.matchReasons[0]}
             </p>
             {spotlightJob.referralAvailable && (

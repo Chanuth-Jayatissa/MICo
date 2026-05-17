@@ -36,15 +36,18 @@ const eventTypeConfig: Record<
   string,
   { label: string; color: string; bg: string }
 > = {
-  hackathon: { label: "Hackathon", color: "text-gold", bg: "bg-gold-50" },
   networking: { label: "Networking", color: "text-pine", bg: "bg-sage" },
   workshop: { label: "Workshop", color: "text-success", bg: "bg-success/10" },
-  panel: { label: "Panel", color: "text-slate-iron", bg: "bg-surface-light" },
+  conference: { label: "Conference", color: "text-gold", bg: "bg-gold-50" },
+  "career-fair": { label: "Career Fair", color: "text-pine", bg: "bg-sage" },
+  training: { label: "Training", color: "text-success", bg: "bg-success/10" },
+  community: { label: "Community", color: "text-slate-iron", bg: "bg-surface-light" },
+  other: { label: "Other", color: "text-slate-muted", bg: "bg-surface-light" },
 };
 
 // Source icon labels
 const sourceLabels: Record<string, string> = {
-  ibm_rpa: "Scraped by watsonx",
+  ibm_rpa: "AI Agent",
   api: "via API",
   user_submitted: "Community Submitted",
 };
@@ -123,15 +126,15 @@ export default function EventsPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between animate-fade-in-up">
         <div>
           <h1 className="font-display text-3xl font-bold text-pine">
-            MICo Events: Michigan Tech &amp; Community
+            MICo Events: Michigan Community & Career
           </h1>
           <p className="mt-1 text-slate-muted">
-            AI-curated calendar of tech meetups, hackathons, and networking events.
+            AI-curated calendar of networking events, career fairs, and professional development across all industries.
           </p>
         </div>
         <div className="flex items-center gap-4">
           <Toggle
-            label="Watsonx Auto-Curate"
+            label="AI Auto-Curate"
             checked={autoCurate}
             onChange={setAutoCurate}
           />
@@ -345,7 +348,7 @@ export default function EventsPage() {
       >
         <p className="text-sm text-slate-muted mb-4">
           Paste your raw event details, flyer text, or website link.
-          Watsonx will extract the key information and publish it to the
+          MICo AI will extract the key information and publish it to the
           community.
         </p>
         <textarea
@@ -357,7 +360,7 @@ export default function EventsPage() {
         />
         {isProcessing && (
           <div className="mt-3">
-            <AIPulse label="Watsonx is extracting event details..." />
+            <AIPulse label="MICo AI is extracting event details..." />
           </div>
         )}
         <div className="mt-4 flex justify-end gap-3">
@@ -454,7 +457,7 @@ function EventDetail({ event, toggleRsvp, rsvpd }: { event: MicoEvent; toggleRsv
         <div className="flex items-center gap-2 mb-1">
           <Sparkles className="h-4 w-4 text-gold" />
           <span className="text-xs font-semibold uppercase tracking-wider text-gold">
-            Watsonx AI Summary
+            AI Summary
           </span>
         </div>
         <div className="space-y-2.5">

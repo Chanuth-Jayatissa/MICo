@@ -46,7 +46,7 @@ export async function signUpWithEmail(formData: FormData) {
   redirect("/login?message=Check your email to confirm your account");
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(): Promise<{ url?: string; error?: string }> {
   const supabase = await createClient();
   const headersList = await headers();
   const origin = headersList.get("origin") || "";
@@ -59,12 +59,14 @@ export async function signInWithGoogle() {
   });
 
   if (error) {
-    return redirect(`/login?error=${encodeURIComponent(error.message)}`);
+    return { error: error.message };
   }
 
   if (data.url) {
-    redirect(data.url);
+    return { url: data.url };
   }
+
+  return { error: "No OAuth URL returned" };
 }
 
 export async function signOut() {

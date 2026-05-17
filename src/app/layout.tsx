@@ -17,14 +17,14 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "MICo — Michigan Community Platform",
   description:
-    "AI-powered community platform connecting Michigan talent with local tech events, job opportunities, and insider referrals — powered by IBM watsonx.",
+    "AI-powered community platform connecting Michigan talent with local tech events, job opportunities, and insider referrals — powered by MICo AI.",
   keywords: [
     "Michigan",
     "tech community",
     "jobs",
     "events",
     "AI",
-    "IBM watsonx",
+    "MICo AI",
     "referrals",
   ],
 };

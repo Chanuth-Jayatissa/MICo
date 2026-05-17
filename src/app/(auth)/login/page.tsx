@@ -30,8 +30,14 @@ function LoginForm() {
 
   async function handleGoogleLogin() {
     setIsGoogleLoading(true);
-    await signInWithGoogle();
-    setIsGoogleLoading(false);
+    const result = await signInWithGoogle();
+    if (result?.url) {
+      window.location.href = result.url;
+    } else if (result?.error) {
+      setIsGoogleLoading(false);
+      // The error will show via URL params on next page load
+      window.location.href = `/login?error=${encodeURIComponent(result.error)}`;
+    }
   }
 
   return (

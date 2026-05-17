@@ -4,8 +4,9 @@ export interface MicoEvent {
   description: string;
   location: string;
   locationType: "detroit-metro" | "ann-arbor" | "grand-rapids" | "upper-peninsula" | "virtual";
-  eventType: "hackathon" | "networking" | "workshop" | "panel";
+  eventType: "networking" | "workshop" | "conference" | "career-fair" | "training" | "community" | "other";
   eventDate: string;
+  industry?: string; // "Healthcare", "Manufacturing", "Technology", etc.
   aiSummary: {
     whyAttend: string;
     whosThere: string;
