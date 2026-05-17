@@ -6,6 +6,7 @@ import MatchRing from "@/components/ui/MatchRing";
 import AIPulse from "@/components/ui/AIPulse";
 import Badge from "@/components/ui/Badge";
 import Modal from "@/components/ui/Modal";
+import Toggle from "@/components/ui/Toggle";
 import {
   Search,
   MapPin,
@@ -75,9 +76,19 @@ export default function EventsPage() {
   const [hostModalOpen, setHostModalOpen] = useState(false);
   const [hostEventText, setHostEventText] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [autoCurate, setAutoCurate] = useState(false);
 
   const filteredEvents = useMemo(() => {
-    return mockEvents
+    let events = mockEvents;
+
+    // When auto-curate is on, only sort by match score
+    if (autoCurate) {
+      return [...events].sort(
+        (a, b) => (b.matchScore || 0) - (a.matchScore || 0)
+      );
+    }
+
+    return events
       .filter((event) => {
         const matchesSearch =
           search === "" ||
@@ -93,7 +104,7 @@ export default function EventsPage() {
         (a, b) =>
           new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
       );
-  }, [search, locationFilter, typeFilter]);
+  }, [search, locationFilter, typeFilter, autoCurate]);
 
   const handleHostSubmit = () => {
     setIsProcessing(true);
@@ -110,76 +121,96 @@ export default function EventsPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between animate-fade-in-up">
         <div>
           <h1 className="font-display text-3xl font-bold text-pine">
-            Events
+            MICo Events: Michigan Tech &amp; Community
           </h1>
           <p className="mt-1 text-slate-muted">
-            Michigan&apos;s tech community calendar — curated by AI.
+            AI-curated calendar of tech meetups, hackathons, and networking events.
           </p>
         </div>
-        <button
-          onClick={() => setHostModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-gold px-5 py-3 font-semibold text-pine-dark shadow-md transition-all duration-200 hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]"
-        >
-          <Plus className="h-4 w-4" />
-          Host Event
-        </button>
-      </div>
-
-      {/* Filter Bar */}
-      <div className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-card lg:flex-row lg:items-center animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
-        {/* Search */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-light" />
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-border bg-surface-light py-2.5 pl-10 pr-4 text-sm text-slate-iron placeholder:text-slate-light outline-none transition-all focus:border-pine focus:ring-2 focus:ring-pine/10"
+        <div className="flex items-center gap-4">
+          <Toggle
+            label="Watsonx Auto-Curate"
+            checked={autoCurate}
+            onChange={setAutoCurate}
           />
-        </div>
-
-        {/* Location Filter */}
-        <div className="relative">
-          <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-light pointer-events-none" />
-          <select
-            value={locationFilter}
-            onChange={(e) => setLocationFilter(e.target.value)}
-            className="appearance-none rounded-xl border border-border bg-surface-light py-2.5 pl-9 pr-9 text-sm text-slate-iron outline-none cursor-pointer transition-all focus:border-pine focus:ring-2 focus:ring-pine/10"
+          <button
+            onClick={() => setHostModalOpen(true)}
+            className="inline-flex items-center gap-2 rounded-xl bg-gold px-5 py-3 font-semibold text-pine-dark shadow-md transition-all duration-200 hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]"
           >
-            <option value="all">All Locations</option>
-            {Object.entries(locationLabels).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-light pointer-events-none" />
+            <Plus className="h-4 w-4" />
+            Host Event
+          </button>
         </div>
-
-        {/* Type Filter */}
-        <div className="relative">
-          <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-light pointer-events-none" />
-          <select
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="appearance-none rounded-xl border border-border bg-surface-light py-2.5 pl-9 pr-9 text-sm text-slate-iron outline-none cursor-pointer transition-all focus:border-pine focus:ring-2 focus:ring-pine/10"
-          >
-            <option value="all">All Types</option>
-            {Object.entries(eventTypeConfig).map(([key, conf]) => (
-              <option key={key} value={key}>
-                {conf.label}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-light pointer-events-none" />
-        </div>
-
-        {/* Result Count */}
-        <span className="text-xs font-medium text-slate-light whitespace-nowrap">
-          {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""}
-        </span>
       </div>
+
+      {/* Filter Bar - hidden when Auto-Curate is on */}
+      {!autoCurate && (
+        <div className="flex flex-col gap-3 rounded-2xl bg-white p-4 shadow-card lg:flex-row lg:items-center animate-fade-in-up" style={{ animationDelay: "0.05s" }}>
+          {/* Search */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-light" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-xl border border-border bg-surface-light py-2.5 pl-10 pr-4 text-sm text-slate-iron placeholder:text-slate-light outline-none transition-all focus:border-pine focus:ring-2 focus:ring-pine/10"
+            />
+          </div>
+
+          {/* Location Filter */}
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-light pointer-events-none" />
+            <select
+              value={locationFilter}
+              onChange={(e) => setLocationFilter(e.target.value)}
+              className="appearance-none rounded-xl border border-border bg-surface-light py-2.5 pl-9 pr-9 text-sm text-slate-iron outline-none cursor-pointer transition-all focus:border-pine focus:ring-2 focus:ring-pine/10"
+            >
+              <option value="all">All Locations</option>
+              {Object.entries(locationLabels).map(([key, label]) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-light pointer-events-none" />
+          </div>
+
+          {/* Type Filter */}
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-light pointer-events-none" />
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="appearance-none rounded-xl border border-border bg-surface-light py-2.5 pl-9 pr-9 text-sm text-slate-iron outline-none cursor-pointer transition-all focus:border-pine focus:ring-2 focus:ring-pine/10"
+            >
+              <option value="all">All Types</option>
+              {Object.entries(eventTypeConfig).map(([key, conf]) => (
+                <option key={key} value={key}>
+                  {conf.label}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-light pointer-events-none" />
+          </div>
+
+          {/* Result Count */}
+          <span className="text-xs font-medium text-slate-light whitespace-nowrap">
+            {filteredEvents.length} event{filteredEvents.length !== 1 ? "s" : ""}
+          </span>
+        </div>
+      )}
+
+      {/* Auto-Curate banner */}
+      {autoCurate && (
+        <div className="rounded-2xl bg-sage p-4 shadow-card flex items-center gap-3 animate-fade-in-up">
+          <Sparkles className="h-5 w-5 text-gold shrink-0" />
+          <p className="text-sm text-slate-iron">
+            <span className="font-semibold text-pine">Auto-Curate is on.</span>{" "}
+            Events are ranked by your resume match score. Toggle off to use manual filters.
+          </p>
+        </div>
+      )}
 
       {/* Events Grid */}
       <div className="grid gap-5 lg:grid-cols-2">
@@ -251,9 +282,9 @@ export default function EventsPage() {
                     <Badge variant="outline" size="sm">
                       {locationLabels[event.locationType]}
                     </Badge>
-                    <span className="flex items-center gap-1 text-[10px] text-slate-light">
+                    <span className="flex items-center gap-1 text-[10px] italic text-slate-light">
                       <Bot className="h-3 w-3" />
-                      {sourceLabels[event.source]}
+                      Sourced autonomously via {sourceLabels[event.source]}
                     </span>
                   </div>
 
@@ -449,12 +480,15 @@ function EventDetail({ event }: { event: MicoEvent }) {
       {/* Action Buttons */}
       <div className="flex gap-3">
         <button className="flex-1 rounded-xl bg-gold py-3 font-semibold text-pine-dark shadow-md transition-all hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]">
-          RSVP
-        </button>
-        <button className="flex-1 rounded-xl border border-border bg-white py-3 font-semibold text-slate-iron transition-all hover:border-pine/30 hover:bg-surface-light">
-          Add to Calendar
+          RSVP &amp; Add to Calendar
         </button>
       </div>
+
+      {/* Source Transparency */}
+      <p className="text-[11px] italic text-slate-light flex items-center gap-1 justify-center">
+        <Bot className="h-3 w-3" />
+        Sourced autonomously via {sourceLabels[event.source]}
+      </p>
     </div>
   );
 }

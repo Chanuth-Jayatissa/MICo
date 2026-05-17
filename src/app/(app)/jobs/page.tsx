@@ -6,6 +6,7 @@ import { mockJobs } from "@/lib/mock-data";
 import MatchRing from "@/components/ui/MatchRing";
 import Badge from "@/components/ui/Badge";
 import AIPulse from "@/components/ui/AIPulse";
+import Toggle from "@/components/ui/Toggle";
 import {
   Search,
   MapPin,
@@ -43,6 +44,7 @@ export default function JobsPage() {
   const [locationFilter, setLocationFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"match" | "recent">("match");
   const [selectedJob, setSelectedJob] = useState<Job | null>(mockJobs[0]);
+  const [highMatchOnly, setHighMatchOnly] = useState(false);
 
   const filteredJobs = useMemo(() => {
     return mockJobs
@@ -56,7 +58,8 @@ export default function JobsPage() {
           );
         const matchesLocation =
           locationFilter === "all" || job.locationFilter === locationFilter;
-        return matchesSearch && matchesLocation;
+        const matchesHighMatch = !highMatchOnly || job.matchScore > 80;
+        return matchesSearch && matchesLocation && matchesHighMatch;
       })
       .sort((a, b) => {
         if (sortBy === "match") return b.matchScore - a.matchScore;
@@ -64,18 +67,50 @@ export default function JobsPage() {
           new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
         );
       });
-  }, [search, locationFilter, sortBy]);
+  }, [search, locationFilter, sortBy, highMatchOnly]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="animate-fade-in-up">
         <h1 className="font-display text-3xl font-bold text-pine">
-          Opportunities
+          MICo Opportunities
         </h1>
         <p className="mt-1 text-slate-muted">
           Michigan roles matched to your skills by watsonx.
         </p>
+      </div>
+
+      {/* AI Toggle & Location Pills */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between animate-fade-in-up" style={{ animationDelay: "0.03s" }}>
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(locationLabels).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => setLocationFilter(locationFilter === key ? "all" : key)}
+              className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
+                locationFilter === key
+                  ? "bg-pine text-white shadow-md"
+                  : "bg-sage text-pine hover:bg-sage-dark"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+          {locationFilter !== "all" && (
+            <button
+              onClick={() => setLocationFilter("all")}
+              className="rounded-full px-4 py-2 text-xs font-semibold text-slate-muted bg-surface-light hover:bg-border-light transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        <Toggle
+          label="Only show jobs > 80% MICo Match"
+          checked={highMatchOnly}
+          onChange={setHighMatchOnly}
+        />
       </div>
 
       {/* Filter Bar */}
@@ -339,7 +374,7 @@ function JobDetail({ job, onBack }: { job: Job; onBack: () => void }) {
         <div>
           <h4 className="text-xs font-bold text-pine uppercase tracking-wide mb-2 flex items-center gap-1.5">
             <CheckCircle className="h-3.5 w-3.5 text-success" />
-            Why You&apos;re a Fit
+            Why You&apos;re a Match
           </h4>
           <ul className="space-y-1.5">
             {job.matchReasons.map((reason, i) => (
@@ -359,7 +394,7 @@ function JobDetail({ job, onBack }: { job: Job; onBack: () => void }) {
           <div>
             <h4 className="text-xs font-bold text-pine uppercase tracking-wide mb-2 flex items-center gap-1.5">
               <AlertTriangle className="h-3.5 w-3.5 text-gold" />
-              Skill Gaps to Address
+              MICo Upskill Suggestions
             </h4>
             <ul className="space-y-1.5">
               {job.skillGaps.map((gap, i) => (

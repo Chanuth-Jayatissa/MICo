@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, User, AlertCircle } from "lucide-react";
 import { signUpWithEmail, signInWithGoogle } from "@/app/auth/actions";
 
 export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="w-full max-w-md animate-pulse" />}>
+      <SignupForm />
+    </Suspense>
+  );
+}
+
+function SignupForm() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
   const [showPassword, setShowPassword] = useState(false);
