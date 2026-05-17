@@ -8,7 +8,7 @@ export const mockJobs: Job[] = [
     companyLogo: undefined,
     location: "Detroit, MI (Hybrid)",
     locationFilter: "detroit-metro",
-<<<<<<< HEAD
+    industry: "Technology",
     salaryRange: "$110K – $145K",
     description:
       "Protect DTE Energy's critical infrastructure by designing and implementing cybersecurity solutions across IT and OT environments. Work on threat detection, incident response, and security architecture for systems powering millions of Michigan residents. Collaborate with cross-functional teams to secure SCADA/ICS systems and enterprise cloud platforms.",
@@ -28,18 +28,6 @@ export const mockJobs: Job[] = [
     skillGaps: [
       "SIEM/SOAR platform experience (Splunk, Sentinel) — core to their SOC operations.",
       "ICS/SCADA security knowledge — essential for protecting critical energy infrastructure.",
-=======
-    industry: "Technology",
-    salaryRange: "$120K – $160K",
-    description:
-      "Join Ford's connected mobility team to develop AI systems that power the next generation of autonomous and electric vehicles. You'll work on LLM-based driver assistance features, real-time sensor data processing, and building intelligent fleet management systems.",
-    requirements: ["Python", "PyTorch", "LLM/NLP", "Cloud (AWS/GCP)", "REST APIs", "Docker"],
-    matchScore: 98,
-    matchReasons: [
-      "Your Python experience perfectly aligns with Ford's new mobility initiatives in Dearborn.",
-      "Your background in machine learning matches their autonomous systems team requirements.",
-      "Previous projects demonstrate the rapid prototyping skills they value.",
->>>>>>> 0cbd9301b1e3685ee4df9cbbe876f7a94d274f95
     ],
     referralAvailable: true,
     referralContactName: "David L.",
@@ -50,12 +38,12 @@ export const mockJobs: Job[] = [
   },
   {
     id: "job-002",
-<<<<<<< HEAD
     title: "Software Engineer — Cloud & Data",
     company: "DTE Energy",
     companyLogo: undefined,
     location: "Detroit, MI",
     locationFilter: "detroit-metro",
+    industry: "Technology",
     salaryRange: "$105K – $135K",
     description:
       "Design and develop cloud-native applications and data pipelines that power DTE Energy's digital transformation and grid modernization initiatives. Work with AWS services, Databricks, and enterprise platforms (SAP, ServiceNow) to build scalable solutions supporting Michigan's energy future.",
@@ -68,98 +56,6 @@ export const mockJobs: Job[] = [
       "Agile/Scrum",
     ],
     matchScore: 88,
-=======
-    title: "Registered Nurse (RN) — Med-Surg",
-    company: "Beaumont Health",
-    companyLogo: undefined,
-    location: "Royal Oak, MI",
-    locationFilter: "detroit-metro",
-    industry: "Healthcare",
-    salaryRange: "$65K – $85K + Sign-On Bonus",
-    description:
-      "Provide compassionate, evidence-based care on our Medical-Surgical unit. Work with a multidisciplinary team to manage patient outcomes, administer medications, and educate patients and families. 12-hour shifts with flexible scheduling.",
-    requirements: ["BSN/ADN", "Michigan RN License", "BLS/ACLS", "EMR (Epic)", "Patient Assessment", "IV Therapy"],
-    matchScore: 45,
-    matchReasons: [
-      "If you're a licensed RN, Beaumont's med-surg unit offers excellent career growth.",
-    ],
-    skillGaps: [
-      "Requires an active Michigan RN license.",
-      "BLS and ACLS certifications required.",
-      "Epic EMR experience strongly preferred.",
-    ],
-    referralAvailable: true,
-    referralContactName: "Lisa M.",
-    referralContactId: "usr-insider-005",
-    sourceUrl: "https://beaumont.org/careers",
-    postedAt: "2026-05-14T00:00:00Z",
-    createdAt: "2026-05-14T00:00:00Z",
-  },
-  {
-    id: "job-003",
-    title: "Frontend Developer",
-    company: "StockX",
-    companyLogo: undefined,
-    location: "Detroit, MI",
-    locationFilter: "detroit-metro",
-    industry: "Technology",
-    salaryRange: "$100K – $130K",
-    description:
-      "Build and maintain StockX's consumer-facing marketplace platform used by millions. Focus on performance optimization, accessible design systems, and real-time bidding interfaces using React, Next.js, and TypeScript.",
-    requirements: ["React", "Next.js", "TypeScript", "CSS/Tailwind", "REST APIs", "Git"],
-    matchScore: 87,
-    matchReasons: [
-      "Your experience with Next.js fits their transition to modern frontend frameworks.",
-      "React and TypeScript skills directly match their tech stack.",
-    ],
-    skillGaps: ["Real-time WebSocket experience would be beneficial for their bidding features."],
-    referralAvailable: true,
-    referralContactName: "Alex K.",
-    referralContactId: "usr-insider-003",
-    sourceUrl: "https://stockx.com/careers",
-    postedAt: "2026-05-10T00:00:00Z",
-    createdAt: "2026-05-10T00:00:00Z",
-  },
-  {
-    id: "job-004",
-    title: "CNC Machinist — 2nd Shift",
-    company: "BorgWarner",
-    companyLogo: undefined,
-    location: "Auburn Hills, MI",
-    locationFilter: "detroit-metro",
-    industry: "Manufacturing",
-    salaryRange: "$55K – $75K + Overtime",
-    description:
-      "Set up, operate, and maintain CNC milling and turning machines to produce precision automotive components. Read blueprints, use measuring instruments, and maintain quality standards in a fast-paced production environment.",
-    requirements: ["CNC Programming (G-code)", "Blueprint Reading", "GD&T", "Precision Measurement", "Lathe/Mill Operation", "Quality Control"],
-    matchScore: 40,
-    matchReasons: [
-      "Manufacturing roles at BorgWarner offer excellent benefits and career advancement.",
-    ],
-    skillGaps: [
-      "CNC programming experience (G-code/M-code) is essential.",
-      "Blueprint reading and GD&T knowledge required.",
-      "Consider an apprenticeship program through Macomb Community College.",
-    ],
-    referralAvailable: false,
-    sourceUrl: "https://borgwarner.com/careers",
-    postedAt: "2026-05-08T00:00:00Z",
-    createdAt: "2026-05-08T00:00:00Z",
-  },
-  {
-    id: "job-005",
-    title: "Data Engineer",
-    company: "Rocket Companies",
-    companyLogo: undefined,
-    location: "Detroit, MI",
-    locationFilter: "detroit-metro",
-    industry: "Finance",
-    salaryRange: "$110K – $140K",
-    description:
-      "Design and build data pipelines that power Rocket Mortgage's AI-driven lending decisions. Work with massive datasets, real-time streaming architectures, and help make homeownership more accessible.",
-    requirements: ["SQL", "Python", "Spark/Databricks", "Airflow", "AWS", "Data Modeling"],
-    matchScore: 92,
->>>>>>> 0cbd9301b1e3685ee4df9cbbe876f7a94d274f95
     matchReasons: [
       "Your Python and SQL skills are core requirements for DTE's cloud engineering team.",
       "REST API experience aligns with their enterprise integration needs.",
@@ -174,19 +70,13 @@ export const mockJobs: Job[] = [
     createdAt: "2026-05-14T00:00:00Z",
   },
   {
-<<<<<<< HEAD
     id: "job-003",
     title: "Data & AI Sales Engineer",
     company: "IBM",
-=======
-    id: "job-006",
-    title: "Elementary School Teacher",
-    company: "Detroit Public Schools (DPSCD)",
->>>>>>> 0cbd9301b1e3685ee4df9cbbe876f7a94d274f95
     companyLogo: undefined,
     location: "Detroit, MI (Ally Detroit Center, 500 Woodward Ave)",
     locationFilter: "detroit-metro",
-<<<<<<< HEAD
+    industry: "Technology",
     salaryRange: "$120K – $160K",
     description:
       "Join IBM's Detroit office as a Data & AI Sales Engineer, helping enterprise clients across Michigan adopt watsonx, hybrid cloud, and AI solutions. Conduct technical demonstrations, build proof-of-concepts, and translate complex AI capabilities into business value for automotive, financial services, and energy sector clients.",
@@ -221,6 +111,7 @@ export const mockJobs: Job[] = [
     companyLogo: undefined,
     location: "Detroit, MI",
     locationFilter: "detroit-metro",
+    industry: "Technology",
     salaryRange: "$85K – $110K",
     description:
       "Install, maintain, and repair IBM hardware and software systems across enterprise client sites in Southeast Michigan. Work with IBM Power systems, multi-vendor environments, and provide technical support for critical infrastructure. Opportunities to grow into cloud and AI infrastructure specializations.",
@@ -253,6 +144,7 @@ export const mockJobs: Job[] = [
     companyLogo: undefined,
     location: "Plymouth, MI",
     locationFilter: "detroit-metro",
+    industry: "Automotive",
     salaryRange: "$125K – $165K",
     description:
       "Develop embedded software for Bosch's next-generation active safety systems including brake modulators and electronic brake boosters at the Plymouth technical center. Work with AUTOSAR architecture, functional safety standards (ISO 26262), and ASPICE processes to deliver software that saves lives in millions of vehicles worldwide.",
@@ -286,6 +178,7 @@ export const mockJobs: Job[] = [
     companyLogo: undefined,
     location: "Plymouth, MI",
     locationFilter: "detroit-metro",
+    industry: "Technology",
     salaryRange: "$115K – $150K",
     description:
       "Build and scale enterprise software systems powering Rivian's supply chain, manufacturing operations, and internal tools at their Plymouth, MI engineering hub. Work across the full stack with modern frameworks to support the production of Rivian's electric vehicles and grow within one of Michigan's most exciting EV companies.",
@@ -310,35 +203,17 @@ export const mockJobs: Job[] = [
     referralContactName: "Alex K.",
     referralContactId: "usr-insider-004",
     sourceUrl: "https://careers.rivian.com",
-=======
-    industry: "Education",
-    salaryRange: "$52K – $78K",
-    description:
-      "Shape young minds in Detroit's public school system. Develop engaging lesson plans aligned to Michigan standards, build inclusive classroom environments, and collaborate with families and support staff to drive student success.",
-    requirements: ["Michigan Teaching Certificate", "K-5 Endorsement", "Classroom Management", "Differentiated Instruction", "SEL Strategies", "Parent Communication"],
-    matchScore: 35,
-    matchReasons: [
-      "DPSCD is actively recruiting passionate educators with signing incentives.",
-    ],
-    skillGaps: [
-      "Requires a valid Michigan Teaching Certificate.",
-      "K-5 endorsement necessary for elementary positions.",
-      "Consider Wayne State's alternative certification pathway if career-switching.",
-    ],
-    referralAvailable: false,
-    sourceUrl: "https://detroitk12.org/careers",
->>>>>>> 0cbd9301b1e3685ee4df9cbbe876f7a94d274f95
     postedAt: "2026-05-13T00:00:00Z",
     createdAt: "2026-05-13T00:00:00Z",
   },
   {
     id: "job-007",
-<<<<<<< HEAD
     title: "Principal Software Engineer — Autonomous Driving",
     company: "Magna International",
     companyLogo: undefined,
     location: "Troy, MI",
     locationFilter: "detroit-metro",
+    industry: "Automotive",
     salaryRange: "$140K – $180K",
     description:
       "Lead the development of autonomous driving software at Magna's Troy technical center. Work on image signal processing, sensor fusion, and perception algorithms for next-generation ADAS and self-driving platforms. Collaborate with global engineering teams to deliver production-ready autonomous driving features for major automotive OEMs.",
@@ -362,58 +237,35 @@ export const mockJobs: Job[] = [
     ],
     referralAvailable: false,
     sourceUrl: "https://magna.com/careers",
-=======
-    title: "Supply Chain Analyst",
-    company: "General Motors",
-    companyLogo: undefined,
-    location: "Warren, MI",
-    locationFilter: "detroit-metro",
-    industry: "Automotive",
-    salaryRange: "$75K – $100K",
-    description:
-      "Optimize GM's global supply chain operations. Analyze logistics data, forecast demand, and collaborate with suppliers to ensure on-time delivery of components for EV production lines.",
-    requirements: ["Excel/Power BI", "SQL", "Supply Chain Management", "SAP", "Data Analysis", "Forecasting"],
-    matchScore: 72,
-    matchReasons: [
-      "Your SQL and data analysis skills are directly applicable to supply chain optimization.",
-      "GM's EV expansion is creating many new analyst positions in Warren.",
-    ],
-    skillGaps: [
-      "SAP experience — GM's primary ERP system.",
-      "Supply chain management fundamentals (consider APICS certification).",
-    ],
-    referralAvailable: true,
-    referralContactName: "Priya M.",
-    referralContactId: "usr-insider-004",
-    sourceUrl: "https://gm.com/careers",
->>>>>>> 0cbd9301b1e3685ee4df9cbbe876f7a94d274f95
     postedAt: "2026-05-09T00:00:00Z",
     createdAt: "2026-05-09T00:00:00Z",
   },
   {
     id: "job-008",
-    title: "Licensed Electrician",
-    company: "Motor City Electric",
+    title: "Data Engineer",
+    company: "Rocket Companies",
     companyLogo: undefined,
-    location: "Detroit, MI (Metro Area)",
+    location: "Detroit, MI",
     locationFilter: "detroit-metro",
-    industry: "Trades",
-    salaryRange: "$60K – $90K + Benefits",
+    industry: "Finance",
+    salaryRange: "$110K – $140K",
     description:
-      "Join one of Michigan's largest electrical contractors. Work on commercial and industrial electrical installations, troubleshoot systems, and mentor apprentices. Projects range from EV charging infrastructure to hospital power systems.",
-    requirements: ["Michigan Journeyman License", "NEC Code Knowledge", "Conduit Bending", "Motor Controls", "Blueprint Reading", "OSHA 30"],
-    matchScore: 38,
+      "Design and build data pipelines that power Rocket Mortgage's AI-driven lending decisions. Work with massive datasets, real-time streaming architectures, and help make homeownership more accessible.",
+    requirements: ["SQL", "Python", "Spark/Databricks", "Airflow", "AWS", "Data Modeling"],
+    matchScore: 92,
     matchReasons: [
-      "Motor City Electric is expanding rapidly due to EV infrastructure demand.",
+      "Your SQL and Python skills are core requirements for this role.",
+      "Experience with data analysis aligns with their pipeline engineering needs.",
     ],
     skillGaps: [
-      "Requires a Michigan Journeyman Electrician License.",
-      "NEC code knowledge essential — consider a refresher course.",
-      "OSHA 30 certification needed for job sites.",
+      "Apache Spark — consider hands-on practice with Databricks Community Edition.",
+      "Airflow orchestration experience would strengthen your application.",
     ],
-    referralAvailable: false,
-    sourceUrl: "https://motorcityelectric.com/careers",
-    postedAt: "2026-05-11T00:00:00Z",
-    createdAt: "2026-05-11T00:00:00Z",
+    referralAvailable: true,
+    referralContactName: "Marcus T.",
+    referralContactId: "usr-insider-005",
+    sourceUrl: "https://rocketcompanies.com/careers",
+    postedAt: "2026-05-14T00:00:00Z",
+    createdAt: "2026-05-14T00:00:00Z",
   },
 ];

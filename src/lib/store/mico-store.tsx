@@ -217,15 +217,10 @@ interface MicoContextValue {
 
 const MicoContext = createContext<MicoContextValue | null>(null);
 
-<<<<<<< HEAD
 // ─── Storage Key ───
 // Bump this version when mock data changes to invalidate stale localStorage cache
 const DATA_VERSION = "v2-real-data";
 const STORAGE_KEY = `mico-app-state-${DATA_VERSION}`;
-=======
-// ─── Storage ───
-const STORAGE_KEY = "mico-app-state";
->>>>>>> 0cbd9301b1e3685ee4df9cbbe876f7a94d274f95
 
 function saveToStorage(state: MicoState) {
   try {
