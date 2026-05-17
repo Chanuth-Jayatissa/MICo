@@ -20,8 +20,14 @@ import {
   Bot,
   CheckCircle,
   XCircle,
+  Mail,
+  Globe,
+  Code,
+  Phone,
+  UserCircle,
 } from "lucide-react";
 import type { Referral, ReferralStatus } from "@/types/referral";
+import type { Contact } from "@/types/contact";
 
 // Map referral status to timeline node statuses
 function getTimelineNodes(status: ReferralStatus) {
@@ -84,13 +90,13 @@ function timeAgo(dateStr: string) {
 
 export default function NetworkPage() {
   const { state, approveReferral, declineReferral } = useMico();
-  const { referrals, userProfile } = state;
+  const { referrals, contacts, userProfile } = state;
 
   // Split referrals into outbox (my requests) and inbox (requests sent to me as an insider)
   const myRequests = referrals.filter((r) => r.requesterId === userProfile.id);
   const incomingRequests = referrals.filter((r) => r.insiderId === userProfile.id || r.insiderId === "usr-insider-unknown");
 
-  const [activeView, setActiveView] = useState<"outbox" | "inbox">("outbox");
+  const [activeView, setActiveView] = useState<"outbox" | "inbox" | "contacts">("contacts");
 
   const pendingInboxCount = incomingRequests.filter(
     (r) => r.status !== "approved" && r.status !== "declined" && r.status !== "referred_to_hr"
@@ -114,6 +120,17 @@ export default function NetworkPage() {
         style={{ animationDelay: "0.05s" }}
       >
         <div className="inline-flex rounded-full border-2 border-border bg-white p-1 shadow-soft">
+          <button
+            onClick={() => setActiveView("contacts")}
+            className={`flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 ${
+              activeView === "contacts"
+                ? "bg-gold text-pine-dark shadow-md"
+                : "text-slate-muted hover:text-slate-iron"
+            }`}
+          >
+            <Users className="h-4 w-4" />
+            My Contacts
+          </button>
           <button
             onClick={() => setActiveView("outbox")}
             className={`flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-300 ${
@@ -151,12 +168,23 @@ export default function NetworkPage() {
       >
         <AIPulse
           label={
-            activeView === "outbox"
+            activeView === "contacts"
+              ? "MICo AI aggregated these contacts from your linked integrations."
+              : activeView === "outbox"
               ? "MICo AI is monitoring your referral pipeline and drafting personalized pitches."
               : "AI-generated referral pitches are ready for your review."
           }
         />
       </div>
+
+      {/* View Contacts */}
+      {activeView === "contacts" && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+          {contacts.map((contact) => (
+            <ContactCard key={contact.id} contact={contact} />
+          ))}
+        </div>
+      )}
 
       {/* View A: My Requests (Outbox) */}
       {activeView === "outbox" && (
@@ -464,6 +492,64 @@ function InboxCard({
             )}
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Contact Card Sub-Component ---- */
+
+function ContactCard({ contact }: { contact: Contact }) {
+  const getPlatformIcon = () => {
+    switch (contact.platform) {
+      case "email": return <Mail className="h-4 w-4" />;
+      case "linkedin": return <Globe className="h-4 w-4" />;
+      case "github": return <Code className="h-4 w-4" />;
+      case "phone": return <Phone className="h-4 w-4" />;
+      default: return <UserCircle className="h-4 w-4" />;
+    }
+  };
+
+  const getPlatformColor = () => {
+    switch (contact.platform) {
+      case "email": return "text-blue-500 bg-blue-50 border-blue-200";
+      case "linkedin": return "text-indigo-600 bg-indigo-50 border-indigo-200";
+      case "github": return "text-slate-700 bg-slate-100 border-slate-300";
+      case "phone": return "text-emerald-600 bg-emerald-50 border-emerald-200";
+      default: return "text-slate-500 bg-surface-light border-border";
+    }
+  };
+
+  return (
+    <div className="rounded-2xl bg-white p-5 shadow-card flex flex-col justify-between hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+      <div>
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-sage font-display text-lg font-bold text-pine shrink-0">
+            {contact.name.split(" ").map((n) => n[0]).join("")}
+          </div>
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-semibold ${getPlatformColor()}`}>
+            {getPlatformIcon()}
+            <span className="capitalize">{contact.platform}</span>
+          </div>
+        </div>
+        <h3 className="font-display text-lg font-bold text-slate-iron leading-tight">
+          {contact.name}
+        </h3>
+        <p className="text-sm font-medium text-pine mt-1">
+          {contact.jobTitle} @ {contact.company}
+        </p>
+        <div className="mt-4 p-3 rounded-xl bg-surface-light border border-border-light relative">
+          <Sparkles className="h-3 w-3 text-gold absolute -top-1.5 -left-1.5 bg-white rounded-full" />
+          <p className="text-xs text-slate-muted italic leading-relaxed">
+            &ldquo;{contact.relationshipContext}&rdquo;
+          </p>
+        </div>
+      </div>
+      <div className="mt-5 pt-4 border-t border-border-light flex justify-end">
+        <button className="text-xs font-semibold text-white bg-pine hover:bg-pine-light px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 active:scale-95">
+          <Send className="h-3 w-3" />
+          Request Referral
+        </button>
       </div>
     </div>
   );

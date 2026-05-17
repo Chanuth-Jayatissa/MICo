@@ -70,9 +70,9 @@ export default function ProfilePage() {
         // Fallback: send just the filename if file reading fails
         uploadResume(file.name);
       };
-      // Read file as text — works well for .txt, .doc, .rtf
-      // For .pdf, the raw text extraction won't be perfect but the AI can still work with it
-      reader.readAsText(file);
+      // Read file as a Data URL (base64) so we can preserve binary data for PDFs
+      // The server will decode and parse it.
+      reader.readAsDataURL(file);
     },
     [uploadResume]
   );

@@ -8,12 +8,13 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import { mockJobs, mockEvents, mockReferrals, defaultUserProfile } from "@/lib/mock-data";
+import { mockJobs, mockEvents, mockReferrals, mockContacts, defaultUserProfile } from "@/lib/mock-data";
 import { recalculateAllJobMatches, recalculateAllEventMatches } from "@/lib/matching/engine";
 import type { UserProfile } from "@/types/user";
 import type { MicoEvent } from "@/types/event";
 import type { Job } from "@/types/job";
 import type { Referral, ReferralStatus } from "@/types/referral";
+import type { Contact } from "@/types/contact";
 
 // ─── Toast Types ───
 export interface Toast {
@@ -28,6 +29,7 @@ export interface MicoState {
   events: MicoEvent[];
   jobs: Job[];
   referrals: Referral[];
+  contacts: Contact[];
   rsvps: string[];
   bookmarkedJobs: string[];
   resumeFile: { name: string; parsedAt: string } | null;
@@ -60,6 +62,7 @@ const initialState: MicoState = {
   events: mockEvents,
   jobs: mockJobs,
   referrals: mockReferrals,
+  contacts: mockContacts,
   rsvps: [],
   bookmarkedJobs: [],
   resumeFile: null,
