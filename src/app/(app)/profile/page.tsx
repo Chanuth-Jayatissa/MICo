@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { mockUserProfile } from "@/lib/mock-data";
+import { useMico } from "@/lib/store/mico-store";
 import UploadZone from "@/components/ui/UploadZone";
 import Toggle from "@/components/ui/Toggle";
 import Badge from "@/components/ui/Badge";
@@ -16,7 +16,6 @@ import {
   TrendingUp,
   CheckCircle,
   Edit3,
-  Save,
   X,
   Zap,
   Bot,
@@ -49,55 +48,43 @@ const confidenceConfig: Record<
 };
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(mockUserProfile);
+  const { state, updateProfile, addSkill, removeSkill, uploadResume } = useMico();
+  const { userProfile: user, resumeFile } = state;
+
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isComplete, setIsComplete] = useState(user.resumeParsed);
   const [isEditingSkills, setIsEditingSkills] = useState(false);
-  const [editSkills, setEditSkills] = useState(user.skills.join(", "));
   const [newSkill, setNewSkill] = useState("");
 
   const handleFileUpload = useCallback(
-    (_file: File) => {
+    (file: File) => {
       setIsProcessing(true);
-      setIsComplete(false);
       // Simulate parsing delay
       setTimeout(() => {
         setIsProcessing(false);
-        setIsComplete(true);
-        setUser((prev) => ({ ...prev, resumeParsed: true }));
-      }, 3000);
+        uploadResume(file.name);
+      }, 2500);
     },
-    []
+    [uploadResume]
   );
 
   const handleToggleRelocate = (checked: boolean) => {
-    setUser((prev) => ({ ...prev, openToRelocate: checked }));
+    updateProfile({ openToRelocate: checked });
   };
 
   const handleToggleHybrid = (checked: boolean) => {
-    setUser((prev) => ({ ...prev, openToHybrid: checked }));
+    updateProfile({ openToHybrid: checked });
   };
 
   const handleToggleReferrals = (checked: boolean) => {
-    setUser((prev) => ({ ...prev, availableForReferrals: checked }));
+    updateProfile({ availableForReferrals: checked });
   };
 
   const handleAddSkill = () => {
     const skill = newSkill.trim();
-    if (skill && !user.skills.includes(skill)) {
-      setUser((prev) => ({
-        ...prev,
-        skills: [...prev.skills, skill],
-      }));
+    if (skill) {
+      addSkill(skill);
       setNewSkill("");
     }
-  };
-
-  const handleRemoveSkill = (skillToRemove: string) => {
-    setUser((prev) => ({
-      ...prev,
-      skills: prev.skills.filter((s) => s !== skillToRemove),
-    }));
   };
 
   return (
@@ -120,13 +107,13 @@ export default function ProfilePage() {
         <UploadZone
           onFileSelect={handleFileUpload}
           isProcessing={isProcessing}
-          isComplete={isComplete}
+          isComplete={user.resumeParsed}
           className="min-h-[160px]"
         />
       </div>
 
       {/* AI Status */}
-      {isComplete && (
+      {user.resumeParsed && (
         <div
           className="animate-fade-in-up"
           style={{ animationDelay: "0.1s" }}
@@ -191,7 +178,7 @@ export default function ProfilePage() {
                     {skill}
                     {isEditingSkills && (
                       <button
-                        onClick={() => handleRemoveSkill(skill)}
+                        onClick={() => removeSkill(skill)}
                         className="ml-0.5 flex h-4 w-4 items-center justify-center rounded-full text-slate-light hover:bg-error/10 hover:text-error transition-colors"
                       >
                         <X className="h-3 w-3" />
@@ -424,6 +411,11 @@ export default function ProfilePage() {
                   <div>
                     <p className="font-semibold text-slate-iron">
                       Resume Successfully Parsed
+                      {resumeFile && (
+                        <span className="text-sm font-normal text-slate-muted ml-2">
+                          ({resumeFile.name})
+                        </span>
+                      )}
                     </p>
                     <p className="text-sm text-slate-muted mt-0.5">
                       Document Extractor has analyzed your skills, experience,

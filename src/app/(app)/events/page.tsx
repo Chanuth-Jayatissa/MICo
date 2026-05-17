@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { mockEvents } from "@/lib/mock-data";
+import { useMico } from "@/lib/store/mico-store";
 import MatchRing from "@/components/ui/MatchRing";
 import AIPulse from "@/components/ui/AIPulse";
 import Badge from "@/components/ui/Badge";
@@ -69,6 +69,9 @@ function formatEventDate(dateStr: string) {
 }
 
 export default function EventsPage() {
+  const { state, toggleRsvp, isRsvpd, submitHostedEvent } = useMico();
+  const { events: allEvents } = state;
+
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -79,16 +82,14 @@ export default function EventsPage() {
   const [autoCurate, setAutoCurate] = useState(false);
 
   const filteredEvents = useMemo(() => {
-    let events = mockEvents;
-
     // When auto-curate is on, only sort by match score
     if (autoCurate) {
-      return [...events].sort(
+      return [...allEvents].sort(
         (a, b) => (b.matchScore || 0) - (a.matchScore || 0)
       );
     }
 
-    return events
+    return allEvents
       .filter((event) => {
         const matchesSearch =
           search === "" ||
@@ -104,15 +105,16 @@ export default function EventsPage() {
         (a, b) =>
           new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()
       );
-  }, [search, locationFilter, typeFilter, autoCurate]);
+  }, [allEvents, search, locationFilter, typeFilter, autoCurate]);
 
   const handleHostSubmit = () => {
     setIsProcessing(true);
     setTimeout(() => {
+      submitHostedEvent(hostEventText);
       setIsProcessing(false);
       setHostEventText("");
       setHostModalOpen(false);
-    }, 2500);
+    }, 2000);
   };
 
   return (
@@ -328,7 +330,7 @@ export default function EventsPage() {
         onClose={() => setSelectedEvent(null)}
         size="lg"
       >
-        {selectedEvent && <EventDetail event={selectedEvent} />}
+        {selectedEvent && <EventDetail event={selectedEvent} toggleRsvp={toggleRsvp} rsvpd={isRsvpd(selectedEvent.id)} />}
       </Modal>
 
       {/* Host Event Modal */}
@@ -383,7 +385,7 @@ export default function EventsPage() {
 
 /* ---- Event Detail Sub-Component ---- */
 
-function EventDetail({ event }: { event: MicoEvent }) {
+function EventDetail({ event, toggleRsvp, rsvpd }: { event: MicoEvent; toggleRsvp: (id: string) => void; rsvpd: boolean }) {
   const { day, month, time, full } = formatEventDate(event.eventDate);
   const typeConf = eventTypeConfig[event.eventType];
 
@@ -479,8 +481,15 @@ function EventDetail({ event }: { event: MicoEvent }) {
 
       {/* Action Buttons */}
       <div className="flex gap-3">
-        <button className="flex-1 rounded-xl bg-gold py-3 font-semibold text-pine-dark shadow-md transition-all hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]">
-          RSVP &amp; Add to Calendar
+        <button
+          onClick={() => toggleRsvp(event.id)}
+          className={`flex-1 rounded-xl py-3 font-semibold shadow-md transition-all active:scale-[0.98] ${
+            rsvpd
+              ? "bg-success/10 text-success border border-success/20 hover:bg-success/20"
+              : "bg-gold text-pine-dark hover:bg-gold-hover hover:shadow-gold-glow"
+          }`}
+        >
+          {rsvpd ? "RSVP'd ✓ — Click to Cancel" : "RSVP & Add to Calendar"}
         </button>
       </div>
 

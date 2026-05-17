@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { myRequests, incomingRequests, mockUserProfile } from "@/lib/mock-data";
+import { useMico } from "@/lib/store/mico-store";
 import MatchRing from "@/components/ui/MatchRing";
 import AIPulse from "@/components/ui/AIPulse";
 import Badge from "@/components/ui/Badge";
@@ -13,7 +13,6 @@ import {
   Sparkles,
   Check,
   X,
-  ArrowRight,
   Briefcase,
   FileText,
   Clock,
@@ -84,27 +83,18 @@ function timeAgo(dateStr: string) {
 }
 
 export default function NetworkPage() {
+  const { state, approveReferral, declineReferral } = useMico();
+  const { referrals } = state;
+
+  // Split referrals into outbox (my requests) and inbox (requests sent to me as an insider)
+  const myRequests = referrals.filter((r) => r.requesterId === "usr-current");
+  const incomingRequests = referrals.filter((r) => r.insiderId === "usr-current" || r.insiderId === "usr-insider-unknown");
+
   const [activeView, setActiveView] = useState<"outbox" | "inbox">("outbox");
-  const [approvedIds, setApprovedIds] = useState<Set<string>>(new Set());
-  const [declinedIds, setDeclinedIds] = useState<Set<string>>(new Set());
 
-  const handleApprove = (id: string) => {
-    setApprovedIds((prev) => new Set(prev).add(id));
-    setDeclinedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  };
-
-  const handleDecline = (id: string) => {
-    setDeclinedIds((prev) => new Set(prev).add(id));
-    setApprovedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-  };
+  const pendingInboxCount = incomingRequests.filter(
+    (r) => r.status !== "approved" && r.status !== "declined" && r.status !== "referred_to_hr"
+  ).length;
 
   return (
     <div className="space-y-6">
@@ -145,15 +135,9 @@ export default function NetworkPage() {
           >
             <Inbox className="h-4 w-4" />
             Insider Inbox
-            {incomingRequests.filter(
-              (r) => !approvedIds.has(r.id) && !declinedIds.has(r.id)
-            ).length > 0 && (
+            {pendingInboxCount > 0 && (
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-error text-[10px] font-bold text-white">
-                {
-                  incomingRequests.filter(
-                    (r) => !approvedIds.has(r.id) && !declinedIds.has(r.id)
-                  ).length
-                }
+                {pendingInboxCount}
               </span>
             )}
           </button>
@@ -221,10 +205,8 @@ export default function NetworkPage() {
               <InboxCard
                 key={referral.id}
                 referral={referral}
-                isApproved={approvedIds.has(referral.id)}
-                isDeclined={declinedIds.has(referral.id)}
-                onApprove={() => handleApprove(referral.id)}
-                onDecline={() => handleDecline(referral.id)}
+                onApprove={() => approveReferral(referral.id)}
+                onDecline={() => declineReferral(referral.id)}
               />
             ))
           )}
@@ -266,7 +248,7 @@ function OutboxCard({ referral }: { referral: Referral }) {
         <div className="flex items-center gap-4">
           <Badge
             variant={
-              referral.status === "approved"
+              referral.status === "approved" || referral.status === "referred_to_hr"
                 ? "success"
                 : referral.status === "declined"
                 ? "outline"
@@ -309,17 +291,15 @@ function OutboxCard({ referral }: { referral: Referral }) {
 
 function InboxCard({
   referral,
-  isApproved,
-  isDeclined,
   onApprove,
   onDecline,
 }: {
   referral: Referral;
-  isApproved: boolean;
-  isDeclined: boolean;
   onApprove: () => void;
   onDecline: () => void;
 }) {
+  const isApproved = referral.status === "approved" || referral.status === "referred_to_hr";
+  const isDeclined = referral.status === "declined";
   const hasActioned = isApproved || isDeclined;
 
   return (

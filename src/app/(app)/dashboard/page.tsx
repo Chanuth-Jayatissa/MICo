@@ -5,7 +5,7 @@ import MatchRing from "@/components/ui/MatchRing";
 import AIPulse from "@/components/ui/AIPulse";
 import StatusTimeline, { TimelineNodeStatus } from "@/components/ui/StatusTimeline";
 import Badge from "@/components/ui/Badge";
-import { mockJobs, mockEvents, myRequests, mockUserProfile } from "@/lib/mock-data";
+import { useMico } from "@/lib/store/mico-store";
 import {
   Sparkles,
   ArrowRight,
@@ -43,22 +43,23 @@ function formatEventDate(dateStr: string) {
   };
 }
 
-// Count new matches today
-const newMatchCount = mockJobs.filter((j) => j.matchScore >= 80).length;
-
 export default function DashboardPage() {
-  const user = mockUserProfile;
-  const spotlightJob = mockJobs.reduce((best, job) =>
+  const { state, toggleRsvp, isRsvpd } = useMico();
+  const { userProfile: user, jobs, events, referrals, rsvps } = state;
+
+  const newMatchCount = jobs.filter((j) => j.matchScore >= 80).length;
+  const spotlightJob = jobs.reduce((best, job) =>
     job.matchScore > best.matchScore ? job : best
   );
-  const otherJobs = mockJobs
+  const otherJobs = jobs
     .filter((j) => j.id !== spotlightJob.id)
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 3);
-  const upcomingEvents = [...mockEvents]
+  const upcomingEvents = [...events]
     .sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
     .slice(0, 2);
-  const activeReferrals = myRequests.slice(0, 3);
+  const myReferrals = referrals.filter((r) => r.requesterId === "usr-current");
+  const activeReferrals = myReferrals.slice(0, 3);
 
   return (
     <div className="space-y-8">
@@ -109,7 +110,7 @@ export default function DashboardPage() {
             </p>
             {spotlightJob.referralAvailable && (
               <Link
-                href="/network"
+                href="/jobs"
                 className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gold px-6 py-3 font-semibold text-pine-dark shadow-md transition-all duration-200 hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]"
               >
                 Request Insider Referral
@@ -188,11 +189,11 @@ export default function DashboardPage() {
           <div className="space-y-3 stagger-children">
             {upcomingEvents.map((event) => {
               const { day, month } = formatEventDate(event.eventDate);
+              const rsvpd = isRsvpd(event.id);
               return (
-                <Link
+                <div
                   key={event.id}
-                  href="/events"
-                  className="flex gap-3 rounded-xl border border-border-light p-3 card-hover cursor-pointer group"
+                  className="flex gap-3 rounded-xl border border-border-light p-3 card-hover group"
                 >
                   <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-sage group-hover:bg-sage-dark transition-colors">
                     <span className="font-display text-lg font-bold text-pine leading-none">
@@ -210,9 +211,14 @@ export default function DashboardPage() {
                       {event.aiSummary.whyAttend}
                     </p>
                     <div className="mt-1.5 flex items-center gap-2">
-                      <span className="text-[11px] font-semibold text-gold hover:text-gold-hover transition-colors">
-                        RSVP →
-                      </span>
+                      <button
+                        onClick={() => toggleRsvp(event.id)}
+                        className={`text-[11px] font-semibold transition-colors ${
+                          rsvpd ? "text-success" : "text-gold hover:text-gold-hover"
+                        }`}
+                      >
+                        {rsvpd ? "RSVP'd ✓" : "RSVP →"}
+                      </button>
                       {event.matchScore && event.matchScore >= 85 && (
                         <Badge variant="gold" size="sm">
                           {event.matchScore}% match
@@ -220,7 +226,7 @@ export default function DashboardPage() {
                       )}
                     </div>
                   </div>
-                </Link>
+                </div>
               );
             })}
           </div>
@@ -275,9 +281,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
         {[
           { label: "Skills Parsed", value: user.skills.length.toString(), icon: Sparkles, color: "text-pine" },
-          { label: "Jobs Matched", value: mockJobs.filter((j) => j.matchScore >= 70).length.toString(), icon: Briefcase, color: "text-gold" },
-          { label: "Events This Month", value: mockEvents.filter((e) => new Date(e.eventDate).getMonth() === new Date().getMonth()).length.toString(), icon: Calendar, color: "text-success" },
-          { label: "Active Referrals", value: myRequests.length.toString(), icon: Zap, color: "text-gold" },
+          { label: "Jobs Matched", value: jobs.filter((j) => j.matchScore >= 70).length.toString(), icon: Briefcase, color: "text-gold" },
+          { label: "Events RSVP'd", value: rsvps.length.toString(), icon: Calendar, color: "text-success" },
+          { label: "Active Referrals", value: myReferrals.length.toString(), icon: Zap, color: "text-gold" },
         ].map((stat) => (
           <div
             key={stat.label}

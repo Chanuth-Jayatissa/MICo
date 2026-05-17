@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { mockJobs } from "@/lib/mock-data";
+import { useMico } from "@/lib/store/mico-store";
 import MatchRing from "@/components/ui/MatchRing";
 import Badge from "@/components/ui/Badge";
 import AIPulse from "@/components/ui/AIPulse";
@@ -21,6 +21,8 @@ import {
   ArrowRight,
   ChevronLeft,
   SlidersHorizontal,
+  Bookmark,
+  BookmarkCheck,
 } from "lucide-react";
 import type { Job } from "@/types/job";
 
@@ -40,14 +42,17 @@ function timeAgo(dateStr: string) {
 }
 
 export default function JobsPage() {
+  const { state, requestReferral, toggleBookmark, isBookmarked } = useMico();
+  const { jobs: allJobs, referrals } = state;
+
   const [search, setSearch] = useState("");
   const [locationFilter, setLocationFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"match" | "recent">("match");
-  const [selectedJob, setSelectedJob] = useState<Job | null>(mockJobs[0]);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(allJobs[0] ?? null);
   const [highMatchOnly, setHighMatchOnly] = useState(false);
 
   const filteredJobs = useMemo(() => {
-    return mockJobs
+    return allJobs
       .filter((job) => {
         const matchesSearch =
           search === "" ||
@@ -67,7 +72,12 @@ export default function JobsPage() {
           new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
         );
       });
-  }, [search, locationFilter, sortBy, highMatchOnly]);
+  }, [allJobs, search, locationFilter, sortBy, highMatchOnly]);
+
+  // Check if a referral has already been requested for a job
+  const hasRequestedReferral = (jobId: string) => {
+    return referrals.some((r) => r.jobId === jobId && r.requesterId === "usr-current");
+  };
 
   return (
     <div className="space-y-6">
@@ -259,6 +269,10 @@ export default function JobsPage() {
             <JobDetail
               job={selectedJob}
               onBack={() => setSelectedJob(null)}
+              onRequestReferral={() => requestReferral(selectedJob)}
+              hasRequestedReferral={hasRequestedReferral(selectedJob.id)}
+              isBookmarked={isBookmarked(selectedJob.id)}
+              onToggleBookmark={() => toggleBookmark(selectedJob.id)}
             />
           ) : (
             <div className="flex flex-col items-center justify-center rounded-2xl bg-white py-20 shadow-card">
@@ -279,7 +293,21 @@ export default function JobsPage() {
 
 /* ---- Job Detail Sub-Component ---- */
 
-function JobDetail({ job, onBack }: { job: Job; onBack: () => void }) {
+function JobDetail({
+  job,
+  onBack,
+  onRequestReferral,
+  hasRequestedReferral,
+  isBookmarked,
+  onToggleBookmark,
+}: {
+  job: Job;
+  onBack: () => void;
+  onRequestReferral: () => void;
+  hasRequestedReferral: boolean;
+  isBookmarked: boolean;
+  onToggleBookmark: () => void;
+}) {
   return (
     <div className="rounded-2xl bg-white p-6 shadow-card lg:p-8 space-y-6 animate-fade-in-up">
       {/* Mobile back */}
@@ -414,13 +442,20 @@ function JobDetail({ job, onBack }: { job: Job; onBack: () => void }) {
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 sm:flex-row">
         {job.referralAvailable ? (
-          <Link
-            href="/network"
-            className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gold py-3.5 font-semibold text-pine-dark shadow-md transition-all hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]"
-          >
-            <Zap className="h-4 w-4" />
-            Request Referral via {job.referralContactName}
-          </Link>
+          hasRequestedReferral ? (
+            <div className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-success/10 border border-success/20 py-3.5 font-semibold text-success">
+              <CheckCircle className="h-4 w-4" />
+              Referral Requested — Check Network Tab
+            </div>
+          ) : (
+            <button
+              onClick={onRequestReferral}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gold py-3.5 font-semibold text-pine-dark shadow-md transition-all hover:bg-gold-hover hover:shadow-gold-glow active:scale-[0.98]"
+            >
+              <Zap className="h-4 w-4" />
+              Request Referral via {job.referralContactName}
+            </button>
+          )
         ) : (
           <button
             disabled
@@ -430,6 +465,20 @@ function JobDetail({ job, onBack }: { job: Job; onBack: () => void }) {
             No Insider Referral Available
           </button>
         )}
+        <button
+          onClick={onToggleBookmark}
+          className={`flex items-center justify-center gap-2 rounded-xl border py-3.5 px-6 font-semibold transition-all ${
+            isBookmarked
+              ? "border-gold bg-gold-50 text-gold"
+              : "border-border bg-white text-slate-iron hover:border-pine/30 hover:bg-surface-light"
+          }`}
+        >
+          {isBookmarked ? (
+            <><BookmarkCheck className="h-4 w-4" /> Saved</>
+          ) : (
+            <><Bookmark className="h-4 w-4" /> Save Job</>
+          )}
+        </button>
         {job.sourceUrl && (
           <a
             href={job.sourceUrl}
