@@ -211,7 +211,9 @@ interface MicoContextValue {
 const MicoContext = createContext<MicoContextValue | null>(null);
 
 // ─── Storage Key ───
-const STORAGE_KEY = "mico-app-state";
+// Bump this version when mock data changes to invalidate stale localStorage cache
+const DATA_VERSION = "v2-real-data";
+const STORAGE_KEY = `mico-app-state-${DATA_VERSION}`;
 
 function saveToStorage(state: MicoState) {
   try {
@@ -224,6 +226,13 @@ function saveToStorage(state: MicoState) {
 
 function loadFromStorage(): Partial<MicoState> | null {
   try {
+    // Clean up old storage keys from previous versions
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith("mico-app-state") && key !== STORAGE_KEY) {
+        localStorage.removeItem(key);
+      }
+    }
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
     return JSON.parse(raw);
